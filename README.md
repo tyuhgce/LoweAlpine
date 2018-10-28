@@ -49,6 +49,42 @@ Scripts are declared in
 - main/resources/postgresApp/init.sql and 
 - main/resources/tarantoolApp/box.cfg.lua
 
+FUNCTIONALITY
+-----------
+
+Rest Api contains following functionality:
+
+- get/:cinema/:hall. <br />
+This query returns all places of hall in the specific cinema.
+Response in a format "0,1,0,0,1", where 0 means place is free, 1 means place is booked.
+- check/:cinema/:hall/:place. <br />
+This query return true if the place is booked, false otherwise.
+- book/:cinema/:hall/:place. <br />
+This query returns true if the place is booked succussfully, false otherwise.
+
+ARCHITECTURE
+-----------
+
+There are following components in app:
+- RestApi component: this component contains logic for get, check and book operations.
+- Postgres DataBase component: instance of postgres to store data.
+- Tarantool DataBase component: instance of tarantool key/value storage to store cache from postgres instance. 
+
+<pre>
+               |‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾|
+               |               ___________                 |
+Client <--------------------->|  RestApi  |                |
+               |              | Component |                |
+               |               ‾‾|‾‾‾‾‾|‾‾                 |
+               |                 |     |                   |
+               |          |‾‾‾‾‾‾       ‾‾‾‾‾‾|            |
+               |   _______|___              __|________    |
+               |  |  Postgres |            | Tarantool |   |
+               |  |  DataBase |            |  DataBase |   |
+               |   ‾‾‾‾‾‾‾‾‾‾‾              ‾‾‾‾‾‾‾‾‾‾‾    |
+               |___________________________________________|
+</pre>
+
 WHAT'S NEXT
 -----------
 
